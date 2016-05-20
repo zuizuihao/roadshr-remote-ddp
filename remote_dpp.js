@@ -28,6 +28,8 @@ RemoteDDP.monkeyPatch = function () {
   // Replace base connection.
   Accounts.connection = connection;
   Meteor.connection = connection;
+  Accounts.users = new Mongo.Collection("users", connection);
+  Meteor.users = Accounts.users;
 
   // Patch methods
   var methods = ["subscribe", "call", "apply", "methods", "status", "reconnect", "disconnect", "onReconnect"];
@@ -37,8 +39,13 @@ RemoteDDP.monkeyPatch = function () {
     };
   });
 
-  Meteor.users = new Mongo.Collection("users", connection);
-  Meteor.connection.subscribe('users');
+  Tracker.autorun(function () {
+    var user = Meteor.user();
+    if (user) {
+      // using u2622:persistent-session
+      Session.set('_storedLoginToken', Accounts._storedLoginToken(), true);
+    }
+  });
 
   return connection;
 }

@@ -13,12 +13,16 @@ Package.describe({
 Package.onUse(function(api) {
   api.versionsFrom('1.3.2.4');
   api.use('ecmascript');
-  api.export('RemoteDDP', 'client');
-  api.addFiles('remote_dpp.js', 'client');
+  api.use('underscore');
+  api.use('u2622:persistent-session');
+  api.export('RemoteDDP', ['client', 'server']);
+  api.addFiles('remote_dpp.js', ['client', 'server']);
 });
 
 Package.onTest(function(api) {
   api.use('ecmascript');
+  api.use('underscore');
+  api.use('u2622:persistent-session');
   api.use('tinytest');
   api.use('roadshr:remote-ddp');
   api.mainModule('remote-ddp-tests.js');
